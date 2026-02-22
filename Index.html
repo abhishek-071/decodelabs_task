@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Task Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="dashboard">
+
+    <aside class="sidebar">
+  <h2>MyApp</h2>
+  <ul>
+    <li class="active" onclick="setActive(this)">Dashboard</li>
+    <li onclick="goToTasks(this)">Tasks</li>
+    <li onclick="openSettings()">Settings</li>
+  </ul>
+</aside>
+
+    <div class="main">
+
+      <nav class="navbar">
+        <h1>Task Manager</h1>
+      </nav>
+
+      <div class="content" id="taskSection">
+
+        <div class="input-section">
+          <input type="text" id="taskInput" placeholder="Enter new task">
+          <button onclick="addTask()">Add</button>
+        </div>
+
+        <div class="filters">
+          <button onclick="filterTasks('all')">All</button>
+          <button onclick="filterTasks('active')">Active</button>
+          <button onclick="filterTasks('completed')">Completed</button>
+        </div>
+        <div class="task-info">
+          <span id="taskCount">0 Tasks</span>
+        </div>
+        <ul id="taskList"></ul>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+  <div id="settingsModal" class="modal">
+  <div class="modal-content">
+    <h3>Settings</h3>
+
+    <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    <button onclick="clearAllTasks()">Clear All Tasks</button>
+    <button onclick="logout()">Logout</button>
+
+    <button onclick="closeSettings()">Close</button>
+  </div>
+</div>
+</body>
+</html>
