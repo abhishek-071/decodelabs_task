@@ -12,13 +12,14 @@
   <div class="dashboard">
 
     <aside class="sidebar">
-  <h2>MyApp</h2>
-  <ul>
-    <li class="active" onclick="setActive(this)">Dashboard</li>
-    <li onclick="goToTasks(this)">Tasks</li>
-    <li onclick="openSettings()">Settings</li>
-  </ul>
-</aside>
+      <h2>MyApp</h2>
+      <ul>
+        <li class="active" onclick="showDashboard(this)">Dashboard</li>
+        <li onclick="goToTasks(this)">Tasks</li>
+        <li onclick="openSettings()">Settings</li>
+        <li onclick="window.location.href='profile.html'">Profile</li>
+      </ul>
+    </aside>
 
     <div class="main">
 
@@ -26,22 +27,33 @@
         <h1>Task Manager</h1>
       </nav>
 
-      <div class="content" id="taskSection">
+      <div class="content">
 
-        <div class="input-section">
-          <input type="text" id="taskInput" placeholder="Enter new task">
-          <button onclick="addTask()">Add</button>
+        <!-- ================= Dashboard Section ================= -->
+        <div id="dashboardSection">
+          <h2>Add New Task</h2>
+          <div class="input-section">
+            <input type="text" id="taskInput" placeholder="Enter new task">
+            <button onclick="addTask()">Add</button>
+          </div>
         </div>
 
-        <div class="filters">
-          <button onclick="filterTasks('all')">All</button>
-          <button onclick="filterTasks('active')">Active</button>
-          <button onclick="filterTasks('completed')">Completed</button>
+        <!-- ================= Tasks Section ================= -->
+        <div id="taskSection" style="display:none;">
+          <h2>All Tasks</h2>
+
+          <div class="filters">
+            <button onclick="setFilter('all')">All</button>
+            <button onclick="setFilter('active')">Active</button>
+            <button onclick="setFilter('completed')">Completed</button>
+          </div>
+
+          <div class="task-info">
+            <span id="taskCount">0 Tasks</span>
+          </div>
+
+          <ul id="taskList"></ul>
         </div>
-        <div class="task-info">
-          <span id="taskCount">0 Tasks</span>
-        </div>
-        <ul id="taskList"></ul>
 
       </div>
 
@@ -50,16 +62,18 @@
   </div>
 
   <script src="script.js"></script>
+
   <div id="settingsModal" class="modal">
-  <div class="modal-content">
-    <h3>Settings</h3>
+    <div class="modal-content">
+      <h3>Settings</h3>
 
-    <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
-    <button onclick="clearAllTasks()">Clear All Tasks</button>
-    <button onclick="logout()">Logout</button>
+      <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+      <button onclick="clearAllTasks()">Clear All Tasks</button>
+      <button onclick="logout()">Logout</button>
 
-    <button onclick="closeSettings()">Close</button>
+      <button onclick="closeSettings()">Close</button>
+    </div>
   </div>
-</div>
+
 </body>
 </html>

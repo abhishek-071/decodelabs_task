@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="auth-container">
+  <h2>My Profile</h2>
+
+  <!-- PROFILE UPDATE SECTION -->
+  <div class="profile-box">
+    <p><strong>Name:</strong></p>
+    <input type="text" id="editName" />
+
+    <p><strong>Email:</strong></p>
+    <p id="userEmail"></p>
+
+    <button onclick="updateProfile()">Save Changes</button>
+  </div>
+
+  <hr style="margin:30px 0;">
+
+  <!-- CHANGE PASSWORD SECTION -->
+  <div class="profile-box">
+    <h3>Change Password</h3>
+
+    <input type="password" id="oldPassword" placeholder="Old Password">
+    <input type="password" id="newPassword" placeholder="New Password">
+    <input type="password" id="confirmPassword" placeholder="Confirm New Password">
+
+    <button onclick="changePassword()">Change Password</button>
+  </div>
+
+  <div style="margin-top:20px;">
+    <button onclick="goBack()">Back to Dashboard</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<script>
+// ================= TOKEN CHECK =================
+const token = localStorage.getItem("token");
+
+if (!token) {
+  window.location.href = "login.html";
+}
+
+// ================= AUTO LOGOUT TIMER =================
+function checkTokenExpiry() {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const expiry = payload.exp * 1000;
+    const now = Date.now();
+    const timeLeft = expiry - now;
+
+    if (timeLeft <= 0) {
+      logout();
+    } else {
+      setTimeout(() => {
+        alert("Session expired. Please login again.");
+        logout();
+      }, timeLeft);
+    }
+  } catch (error) {
+    logout();
+  }
+}
+
+checkTokenExpiry();
+
+// ================= LOAD PROFILE =================
+async function loadProfile() {
+  try {
+    const res = await fetch("http://localhost:5000/api/auth/me", {
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    });
+
+    if (res.status === 401) {
+      alert("Session expired.");
+      logout();
+      return;
+    }
+
+    const user = await res.json();
+
+    document.getElementById("editName").value = user.name;
+    document.getElementById("userEmail").innerText = user.email;
+
+  } catch (error) {
+    alert("Failed to load profile.");
+  }
+}
+
+// ================= UPDATE PROFILE =================
+async function updateProfile() {
+  const newName = document.getElementById("editName").value.trim();
+
+  if (!newName) {
+    alert("Name cannot be empty");
+    return;
+  }
+
+  const res = await fetch("http://localhost:5000/api/auth/update", {
+    method: "PUT",
+    headers: {
+      "Authorization": "Bearer " + token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name: newName })
+  });
+
+  if (res.status === 401) {
+    alert("Session expired");
+    logout();
+    return;
+  }
+
+  alert("Profile updated successfully!");
+}
+
+// ================= CHANGE PASSWORD =================
+async function changePassword() {
+  const oldPassword = document.getElementById("oldPassword").value.trim();
+  const newPassword = document.getElementById("newPassword").value.trim();
+  const confirmPassword = document.getElementById("confirmPassword").value.trim();
+
+  if (!oldPassword || !newPassword || !confirmPassword) {
+    alert("All fields are required");
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    alert("New passwords do not match");
+    return;
+  }
+
+  if (newPassword.length < 6) {
+    alert("Password must be at least 6 characters");
+    return;
+  }
+
+  const strongRegex = /^(?=.*[A-Z])(?=.*[0-9]).+$/;
+
+  if (!strongRegex.test(newPassword)) {
+    alert("Password must contain at least 1 uppercase letter and 1 number");
+    return;
+  }
+
+  const res = await fetch("http://localhost:5000/api/auth/change-password", {
+    method: "PUT",
+    headers: {
+      "Authorization": "Bearer " + token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ oldPassword, newPassword })
+  });
+
+  const data = await res.json();
+
+  if (res.status === 401) {
+    alert("Session expired");
+    logout();
+    return;
+  }
+
+  if (!res.ok) {
+    alert(data.message);
+    return;
+  }
+
+  alert("Password changed successfully. Please login again.");
+  logout();
+}
+
+// ================= LOGOUT =================
+function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("loggedIn");
+  window.location.href = "login.html";
+}
+
+// ================= NAVIGATION =================
+function goBack() {
+  window.location.href = "index.html";
+}
+
+// ================= DARK MODE =================
+if (localStorage.getItem("darkMode") === "true") {
+  document.body.classList.add("dark");
+}
+
+loadProfile();
+</script>
+
+</body>
+</html>

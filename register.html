@@ -1,41 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Login</title>
+  <title>Register</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="auth-container">
-  <h2>Login</h2>
+  <h2>Create Account</h2>
 
+  <input type="text" id="name" placeholder="Full Name">
   <input type="email" id="email" placeholder="Email">
   <input type="password" id="password" placeholder="Password">
 
-  <button onclick="login()">Login</button>
+  <button onclick="register()">Register</button>
 
-  <p>Don't have account? 
-    <a href="register.html">Register here</a>
+  <p>Already have account? 
+    <a href="login.html">Login here</a>
   </p>
 </div>
 
 <script>
-async function login() {
+async function register() {
+  const name = document.getElementById("name").value;
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  const response = await fetch("http://localhost:5000/api/auth/login", {
+  const response = await fetch("http://localhost:5000/api/auth/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify({ name, email, password })
   });
 
   const data = await response.json();
 
   if (response.ok) {
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("loggedIn", "true");
-    window.location.href = "index.html";
+    alert("Registration successful!");
+    window.location.href = "login.html";
   } else {
     alert(data.message);
   }
