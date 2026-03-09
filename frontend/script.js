@@ -72,7 +72,7 @@ async function addTask() {
     return;
   }
 
-  const res = await safeFetch("http://localhost:5000/tasks", {
+  const res = await safeFetch("https://task-dashboard-vef8.onrender.com", {
     method: "POST",
     headers: authHeaders({
       "Content-Type": "application/json"
@@ -88,7 +88,7 @@ async function addTask() {
 
 // ================= LOAD TASKS =================
 async function loadTasks() {
-  const response = await safeFetch("http://localhost:5000/tasks", {
+  const response = await safeFetch("https://task-dashboard-vef8.onrender.com", {
     headers: authHeaders()
   });
 
@@ -142,7 +142,7 @@ function setFilter(type) {
 
 // ================= DELETE =================
 async function deleteTask(id) {
-  const res = await safeFetch(`http://localhost:5000/tasks/${id}`, {
+  const res = await safeFetch(`https://task-dashboard-vef8.onrender.com/tasks/${id}`, {
     method: "DELETE",
     headers: authHeaders()
   });
@@ -153,7 +153,7 @@ async function deleteTask(id) {
 
 // ================= TOGGLE =================
 async function toggleTask(id) {
-  const res = await safeFetch(`http://localhost:5000/tasks/${id}/toggle`, {
+  const res = await safeFetch(`https://task-dashboard-vef8.onrender.com/tasks/${id}/toggle`, {
     method: "PUT",
     headers: authHeaders()
   });
@@ -168,7 +168,7 @@ async function editTask(id, oldTitle) {
 
   if (!newTitle || newTitle.trim() === "") return;
 
-  const res = await safeFetch(`http://localhost:5000/tasks/${id}`, {
+  const res = await safeFetch(`https://task-dashboard-vef8.onrender.com/tasks/${id}`, {
     method: "PUT",
     headers: authHeaders({
       "Content-Type": "application/json"
@@ -185,7 +185,7 @@ async function clearAllTasks() {
   const confirmDelete = confirm("Are you sure you want to delete all tasks?");
   if (!confirmDelete) return;
 
-  const res = await safeFetch("http://localhost:5000/tasks", {
+  const res = await safeFetch("https://task-dashboard-vef8.onrender.com", {
     method: "DELETE",
     headers: authHeaders()
   });
