@@ -1,11 +1,11 @@
+// ================= CONFIG =================
+const API_BASE = "https://task-dashboard-vef8.onrender.com/api";
+
 // ================= TOKEN CHECK =================
 const token = localStorage.getItem("token");
+if (!token) window.location.href = "login.html";
 
-if (!token) {
-  window.location.href = "login.html";
-}
-
-//================== Auto logout Section ================
+// ================= AUTO LOGOUT =================
 function checkTokenExpiry() {
   const token = localStorage.getItem("token");
   if (!token) return;
@@ -13,109 +13,82 @@ function checkTokenExpiry() {
   const payload = JSON.parse(atob(token.split('.')[1]));
   const expiry = payload.exp * 1000;
   const now = Date.now();
-
   const timeLeft = expiry - now;
 
-  if (timeLeft <= 0) {
+  if (timeLeft <= 0) logout();
+  else setTimeout(() => {
+    alert("Session expired. Please login again.");
     logout();
-  } else {
-    setTimeout(() => {
-      alert("Session expired. Please login again.");
-      logout();
-    }, timeLeft);
-  }
+  }, timeLeft);
 }
-
 checkTokenExpiry();
 
 // ================= GLOBAL STATE =================
 let allTasks = [];
 let currentFilter = "all";
 
-// ================= SAFE FETCH (GLOBAL 401 HANDLER) =================
+// ================= SAFE FETCH =================
 async function safeFetch(url, options = {}) {
-  const response = await fetch(url, options);
-
-  if (response.status === 401) {
+  const res = await fetch(url, options);
+  if (res.status === 401) {
     alert("Session expired. Please login again.");
     logout();
     return null;
   }
-
-  return response;
+  return res;
 }
 
-// ================= COMMON AUTH HEADERS =================
+// ================= AUTH HEADERS =================
 function authHeaders(extra = {}) {
-  return {
-    "Authorization": "Bearer " + token,
-    ...extra
-  };
+  return { "Authorization": "Bearer " + token, ...extra };
 }
 
 // ================= INIT =================
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
   loadTasks();
-
-  if (localStorage.getItem("darkMode") === "true") {
+  if (localStorage.getItem("darkMode") === "true")
     document.body.classList.add("dark");
-  }
 });
 
 // ================= ADD TASK =================
 async function addTask() {
   const input = document.getElementById("taskInput");
   const title = input.value.trim();
+  if (!title) return alert("Enter a task!");
 
-  if (!title) {
-    alert("Please enter a task!");
-    return;
-  }
-
-  const res = await safeFetch("https://task-dashboard-vef8.onrender.com", {
+  const res = await safeFetch(`${API_BASE}/tasks`, {
     method: "POST",
-    headers: authHeaders({
-      "Content-Type": "application/json"
-    }),
+    headers: authHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify({ title })
   });
 
   if (!res) return;
-
   input.value = "";
-  await loadTasks();
+  loadTasks();
 }
 
 // ================= LOAD TASKS =================
 async function loadTasks() {
-  const response = await safeFetch("https://task-dashboard-vef8.onrender.com", {
+  const res = await safeFetch(`${API_BASE}/tasks`, {
     headers: authHeaders()
   });
+  if (!res) return;
 
-  if (!response) return;
-
-  allTasks = await response.json();
+  allTasks = await res.json();
   renderTasks();
 }
 
 // ================= RENDER =================
 function renderTasks() {
-  const taskList = document.getElementById("taskList");
-  taskList.innerHTML = "";
+  const list = document.getElementById("taskList");
+  list.innerHTML = "";
 
   let filtered = allTasks;
-
-  if (currentFilter === "active") {
-    filtered = allTasks.filter(task => !task.completed);
-  }
-
-  if (currentFilter === "completed") {
-    filtered = allTasks.filter(task => task.completed);
-  }
+  if (currentFilter === "active") filtered = allTasks.filter(t => !t.completed);
+  if (currentFilter === "completed") filtered = allTasks.filter(t => t.completed);
 
   filtered.forEach(task => {
     const li = document.createElement("li");
-
     li.innerHTML = `
       <span class="${task.completed ? "completed" : ""}">
         ${task.title}
@@ -126,12 +99,10 @@ function renderTasks() {
         <button onclick="deleteTask('${task._id}')">✖</button>
       </div>
     `;
-
-    taskList.appendChild(li);
+    list.appendChild(li);
   });
 
-  document.getElementById("taskCount").innerText =
-    filtered.length + " Tasks";
+  document.getElementById("taskCount").innerText = filtered.length + " Tasks";
 }
 
 // ================= FILTER =================
@@ -142,55 +113,42 @@ function setFilter(type) {
 
 // ================= DELETE =================
 async function deleteTask(id) {
-  const res = await safeFetch(`https://task-dashboard-vef8.onrender.com/tasks/${id}`, {
+  await safeFetch(`${API_BASE}/tasks/${id}`, {
     method: "DELETE",
     headers: authHeaders()
   });
-
-  if (!res) return;
   loadTasks();
 }
 
 // ================= TOGGLE =================
 async function toggleTask(id) {
-  const res = await safeFetch(`https://task-dashboard-vef8.onrender.com/tasks/${id}/toggle`, {
+  await safeFetch(`${API_BASE}/tasks/${id}/toggle`, {
     method: "PUT",
     headers: authHeaders()
   });
-
-  if (!res) return;
   loadTasks();
 }
 
 // ================= EDIT =================
 async function editTask(id, oldTitle) {
   const newTitle = prompt("Edit task:", oldTitle);
+  if (!newTitle) return;
 
-  if (!newTitle || newTitle.trim() === "") return;
-
-  const res = await safeFetch(`https://task-dashboard-vef8.onrender.com/tasks/${id}`, {
+  await safeFetch(`${API_BASE}/tasks/${id}`, {
     method: "PUT",
-    headers: authHeaders({
-      "Content-Type": "application/json"
-    }),
+    headers: authHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify({ title: newTitle })
   });
-
-  if (!res) return;
   loadTasks();
 }
 
 // ================= CLEAR ALL =================
 async function clearAllTasks() {
-  const confirmDelete = confirm("Are you sure you want to delete all tasks?");
-  if (!confirmDelete) return;
-
-  const res = await safeFetch("https://task-dashboard-vef8.onrender.com", {
+  if (!confirm("Delete all tasks?")) return;
+  await safeFetch(`${API_BASE}/tasks`, {
     method: "DELETE",
     headers: authHeaders()
   });
-
-  if (!res) return;
   loadTasks();
 }
 
@@ -198,49 +156,16 @@ async function clearAllTasks() {
 function openSettings() {
   document.getElementById("settingsModal").style.display = "flex";
 }
-
 function closeSettings() {
   document.getElementById("settingsModal").style.display = "none";
 }
-
 function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("loggedIn");
   window.location.href = "login.html";
 }
-
 function toggleDarkMode() {
   document.body.classList.toggle("dark");
-  localStorage.setItem(
-    "darkMode",
-    document.body.classList.contains("dark")
-  );
-}
-
-// ================= SIDEBAR =================
-function goToTasks(element) {
-  setActive(element);
-
-  const dashboard = document.getElementById("dashboardSection");
-  const task = document.getElementById("taskSection");
-
-  if (dashboard) dashboard.style.display = "none";
-  if (task) task.style.display = "block";
-}
-
-function showDashboard(element) {
-  setActive(element);
-
-  const dashboard = document.getElementById("dashboardSection");
-  const task = document.getElementById("taskSection");
-
-  if (dashboard) dashboard.style.display = "block";
-  if (task) task.style.display = "none";
-}
-
-function setActive(element) {
-  document.querySelectorAll(".sidebar li").forEach(li => {
-    li.classList.remove("active");
-  });
-  element.classList.add("active");
+  localStorage.setItem("darkMode",
+    document.body.classList.contains("dark"));
 }
