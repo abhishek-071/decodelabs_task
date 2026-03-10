@@ -1,49 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Task Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-</head>
+<main class="main">
 
-<body>
+  <!-- DASHBOARD SECTION -->
+  <section id="dashboardSection">
+    <h1>Dashboard</h1>
 
- <div class="app">
-  
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <h2 class="logo">MyApp</h2>
-    <ul>
-      <li onclick="showDashboard(this)">Dashboard</li>
-      <li onclick="goToTasks(this)" class="active">Tasks</li>
-      <li onclick="openSettings()">Settings</li>
-      <li onclick="window.location.href='profile.html'">Profile</li>
-    </ul>
-  </aside>
+    <div class="add-task">
+      <input id="taskInput" placeholder="Enter new task..." />
+      <button onclick="addTask()">Add Task</button>
+    </div>
+  </section>
 
-  <!-- Main Content -->
-  <main class="main">
-    <h1>Task Manager</h1>
+  <!-- TASKS SECTION -->
+  <section id="tasksSection" style="display:none;">
+    <h1>My Tasks</h1>
 
-    <!-- Filters -->
     <div class="filters">
       <button onclick="setFilter('all')">All</button>
       <button onclick="setFilter('active')">Active</button>
       <button onclick="setFilter('completed')">Completed</button>
     </div>
 
-    <!-- Add Task -->
-    <div class="add-task">
-      <input id="taskInput" placeholder="Enter new task..." />
-      <button onclick="addTask()">Add</button>
-    </div>
-
-    <!-- Task List -->
     <ul id="taskList" class="task-list"></ul>
-  </main>
+  </section>
 
-  </div>
-
-</body>
-</html>
+</main>
