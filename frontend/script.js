@@ -169,8 +169,31 @@ function toggleDarkMode() {
   localStorage.setItem("darkMode",
     document.body.classList.contains("dark"));
 }
+// ================= SIDEBAR FIX =================
+
+function setActive(element) {
+  document.querySelectorAll(".sidebar li").forEach(li => {
+    li.classList.remove("active");
+  });
+  element.classList.add("active");
+}
+
 function goToTasks(element) {
   setActive(element);
-  document.getElementById("dashboardSection").style.display = "none";
-  document.getElementById("taskSection").style.display = "block";
+
+  const dashboard = document.getElementById("dashboardSection");
+  const task = document.getElementById("taskSection");
+
+  if (dashboard) dashboard.style.display = "none";
+  if (task) task.style.display = "block";
+}
+
+function showDashboard(element) {
+  setActive(element);
+
+  const dashboard = document.getElementById("dashboardSection");
+  const task = document.getElementById("taskSection");
+
+  if (dashboard) dashboard.style.display = "block";
+  if (task) task.style.display = "none";
 }
