@@ -169,3 +169,8 @@ function toggleDarkMode() {
   localStorage.setItem("darkMode",
     document.body.classList.contains("dark"));
 }
+function goToTasks(element) {
+  setActive(element);
+  document.getElementById("dashboardSection").style.display = "none";
+  document.getElementById("taskSection").style.display = "block";
+}
