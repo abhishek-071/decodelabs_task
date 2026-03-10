@@ -112,9 +112,7 @@ function renderTasks() {
   });
 }
 
-  // document.getElementById("taskCount").innerText = filtered.length + " Tasks";
-}
-
+// document.getElementById("taskCount").innerText = filtered.length + " Tasks";
 // ================= FILTER =================
 function setFilter(type) {
   currentFilter = type;
