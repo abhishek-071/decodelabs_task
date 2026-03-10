@@ -81,28 +81,38 @@ async function loadTasks() {
 // ================= RENDER =================
 function renderTasks() {
   const list = document.getElementById("taskList");
+  if (!list) return;
+
   list.innerHTML = "";
 
   let filtered = allTasks;
-  if (currentFilter === "active") filtered = allTasks.filter(t => !t.completed);
-  if (currentFilter === "completed") filtered = allTasks.filter(t => t.completed);
+
+  if (currentFilter === "active")
+    filtered = allTasks.filter(t => !t.completed);
+
+  if (currentFilter === "completed")
+    filtered = allTasks.filter(t => t.completed);
 
   filtered.forEach(task => {
     const li = document.createElement("li");
+
     li.innerHTML = `
       <span class="${task.completed ? "completed" : ""}">
         ${task.title}
       </span>
+
       <div class="actions">
-        <button onclick="toggleTask('${task._id}')">✔</button>
-        <button onclick="editTask('${task._id}', \`${task.title}\`)">✏</button>
-        <button onclick="deleteTask('${task._id}')">✖</button>
+        <button onclick="toggleTask('${task._id}')">✓</button>
+        <button onclick="editTask('${task._id}', '${task.title}')">✎</button>
+        <button onclick="deleteTask('${task._id}')">✕</button>
       </div>
     `;
+
     list.appendChild(li);
   });
+}
 
-  document.getElementById("taskCount").innerText = filtered.length + " Tasks";
+  // document.getElementById("taskCount").innerText = filtered.length + " Tasks";
 }
 
 // ================= FILTER =================
