@@ -15,28 +15,32 @@
   <aside class="sidebar">
     <h2>MyApp</h2>
     <ul>
-      <li class="active" onclick="showDashboard(this)">Dashboard</li>
-      <li onclick="goToTasks(this)">Tasks</li>
+      <li onclick="showDashboard(this)" class="active">Dashboard</li>
+      <li onclick="showTasks(this)">Tasks</li>
       <li onclick="window.location.href='profile.html'">Profile</li>
       <li onclick="logout()">Logout</li>
     </ul>
   </aside>
 
-  <!-- Main -->
-  <main class="main">
+ <main class="main">
 
-    <!-- Dashboard -->
-    <section id="dashboardSection">
-      <h1>Dashboard</h1>
-      <div class="card">
-        <h3>Add New Task</h3>
-        <div class="add-task">
-          <input id="taskInput" placeholder="Enter task..." />
-          <button onclick="addTask()">Add Task</button>
-        </div>
-      </div>
-      <!-- <ul id="taskList" class="task-list"><ul> -->
-    </section>
+  <!-- DASHBOARD -->
+  <section id="dashboardSection">
+    <h1>Dashboard</h1>
+
+    <div class="add-task">
+      <input id="taskInput" placeholder="Enter new task..." />
+      <button onclick="addTask()">Add Task</button>
+    </div>
+  </section>
+
+  <!-- TASK LIST -->
+  <section id="tasksSection" style="display:none;">
+    <h1>My Tasks</h1>
+    <ul id="taskList" class="task-list"></ul>
+  </section>
+
+</main>
 
     <!-- Tasks -->
     <section id="tasksSection" style="display:none;">
