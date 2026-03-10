@@ -76,7 +76,7 @@ checkTokenExpiry();
 // ================= LOAD PROFILE =================
 async function loadProfile() {
   try {
-    const res = await fetch("http://localhost:5000/api/auth/me", {
+    const res = await fetch("https://task-dashboard-vef8.onrender.com/api/auth/me", {
       headers: {
         "Authorization": "Bearer " + token
       }
@@ -107,7 +107,7 @@ async function updateProfile() {
     return;
   }
 
-  const res = await fetch("http://localhost:5000/api/auth/update", {
+  const res = await fetch("https://task-dashboard-vef8.onrender.com/api/auth/update", {
     method: "PUT",
     headers: {
       "Authorization": "Bearer " + token,
