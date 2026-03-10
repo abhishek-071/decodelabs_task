@@ -199,3 +199,63 @@ button:hover {
 }
 
 .mt-20 { margin-top: 20px; }
+/* ===== APP LAYOUT FIX ===== */
+
+.app {
+  display: flex;
+  width: 95%;
+  max-width: 1200px;
+  height: 90vh;
+  gap: 20px;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+}
+
+/* Main Area */
+.main {
+  flex: 1;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 30px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  overflow-y: auto;
+}
+
+/* Title */
+.main h1 {
+  margin-bottom: 25px;
+}
+
+/* Filters */
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filters button {
+  width: auto;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+/* Add Task Section */
+.add-task {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.add-task input {
+  flex: 1;
+}
+
+/* Task List */
+.task-list {
+  list-style: none;
+  padding: 0;
+}
